@@ -14,6 +14,8 @@ venv.bak/
 *.gguf
 *.safetensors
 *.bin
+*.exe
+*.dll
 
 #Large artifacts
 models/
@@ -22,4 +24,4 @@ outputs/
 
 .cache/
 
-vendor/llama.cpp/
+vendor/
