@@ -1,0 +1,13 @@
+{
+  "phase": "runtime_optimization",
+  "timestamp": "2026-04-16 19:04:33",
+  "input_model": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\qat_lite\\qat_lite_20260416_145212",
+  "context_cap_tokens": 2048,
+  "kv_cache_quantization": "simulated_int8_target",
+  "sliding_window_tokens": 512,
+  "long_session_turns": 20,
+  "failures": [],
+  "stable_inference": true,
+  "peak_runtime_memory_mb": 2735.59375,
+  "available_ram_gb_end": 1.1940269470214844
+}

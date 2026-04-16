@@ -1,0 +1,30 @@
+{
+  "phase": "baseline",
+  "model": "Qwen/Qwen3.5-2B",
+  "timestamp": "2026-04-16 13:30:37",
+  "throughput_metrics": {
+    "tokens_per_sec": 3.014828981775703,
+    "avg_latency_sec": 13.101904034614563,
+    "num_test_calls": 2,
+    "generated_tokens_total": 79
+  },
+  "memory_metrics": {
+    "rss_before_mb": 288.55859375,
+    "rss_after_model_load_mb": 420.375,
+    "peak_tracemalloc_mb": 27.653011322021484
+  },
+  "system_metrics": {
+    "cpu_cores": 8,
+    "total_ram_gb": 15.395877838134766,
+    "available_ram_gb": 2.7390670776367188
+  },
+  "multilingual_samples": {
+    "english": 5,
+    "hindi": 2,
+    "marathi": 2,
+    "telugu": 2
+  },
+  "artifacts": {
+    "samples_file": "C:\\Users\\Admin\\Documents\\model-optimization\\baselines\\baseline_outputs_samples_20260416_132630.txt"
+  }
+}

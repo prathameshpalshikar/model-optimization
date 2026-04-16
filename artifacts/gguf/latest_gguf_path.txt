@@ -1,0 +1,1 @@
+C:\Users\Admin\Documents\model-optimization\artifacts\gguf\model_Q4_K_M_20260416_174022.gguf

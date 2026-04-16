@@ -1,0 +1,32 @@
+{
+  "phase": "quantization",
+  "timestamp": "2026-04-16 14:01:32",
+  "input_model": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\pruned\\pruned_10pct_20260416_133655",
+  "quantization_method": "bitsandbytes_nf4",
+  "artifact_dir": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\quantized\\quantized_4bit_20260416_134326",
+  "artifact_size_mb": 1665.842544555664,
+  "ram_available_gb": 2.936046600341797,
+  "quality_check": {
+    "english": {
+      "ok": true,
+      "has_repetition_loop": false,
+      "preview": "What is the capital of France?\n\n<think>\nThinking Process:\n\n1.  **Identify the core question:** The user is asking for the capital of France.\n2.  **Retrieve knowledge:** Access know"
+    },
+    "hindi": {
+      "ok": true,
+      "has_repetition_loop": false,
+      "preview": "\u092d\u093e\u0930\u0924 \u0915\u0940 \u0930\u093e\u091c\u0927\u093e\u0928\u0940 \u0915\u094c\u0928 \u0938\u0940 \u0939\u0948?\nA. \u0926\u093f\u0932\u094d\u0932\u0940\nB. \u0928\u0908 \u0926\u093f\u0932\u094d\u0932\u0940\nC. \u092e\u0941\u0902\u092c\u0908\nD. \u0915\u094b\u0932\u0915\u093e\u0924\u093e\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request:** The"
+    },
+    "marathi": {
+      "ok": true,
+      "has_repetition_loop": false,
+      "preview": "\u092e\u0939\u093e\u0930\u093e\u0937\u094d\u091f\u094d\u0930\u093e\u091a\u0947 \u092e\u0941\u0916\u094d\u092f\u093e\u0932\u092f \u0915\u094b\u0923\u0924\u0947 \u0906\u0939\u0947?\nA. \u092e\u0941\u0902\u092c\u0908\nB. \u092a\u0941\u0923\u0947\nC. \u0915\u094b\u0932\u094d\u0939\u093e\u092a\u0941\u0930\u0940\nD. \u0928\u093e\u0936\u093f\u0915\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request"
+    },
+    "telugu": {
+      "ok": true,
+      "has_repetition_loop": false,
+      "preview": "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41 \u0c2a\u0c4d\u0c30\u0c3e\u0c02\u0c24\u0c02 \u0c0f \u0c26\u0c47\u0c36\u0c02\u0c32\u0c4b \u0c09\u0c02\u0c26\u0c3f?\nA. \u0c05\u0c2e\u0c46\u0c30\u0c3f\u0c15\u0c3e\nB. \u0c05\u0c2e\u0c46\u0c30\u0c3f\u0c15\u0c3e\nC. \u0c05\u0c2e\u0c46\u0c30\u0c3f\u0c15\u0c3e\nD. \u0c05\u0c2e\u0c46\u0c30\u0c3f\u0c15\u0c3e\n\n<think>\nThinking"
+    }
+  },
+  "stability_gate_passed": true
+}

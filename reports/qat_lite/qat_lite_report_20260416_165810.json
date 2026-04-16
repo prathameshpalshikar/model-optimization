@@ -1,0 +1,10 @@
+{
+  "phase": "qat_lite",
+  "timestamp": "2026-04-16 17:39:39",
+  "input_model": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\pruned\\pruned_10pct_20260416_133655",
+  "synthetic_samples": 600,
+  "epochs": 1,
+  "adapter_artifact_dir": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\qat_lite\\qat_lite_20260416_165810",
+  "merged_artifact_dir": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\qat_lite\\qat_lite_merged_20260416_165810",
+  "train_loss": 3.3701618194580076
+}

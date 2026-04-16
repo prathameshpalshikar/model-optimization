@@ -1,0 +1,21 @@
+{
+  "phase": "baseline",
+  "model": "qwen3.5:2b",
+  "timestamp": "2026-04-15 23:47:43",
+  "throughput_metrics": {
+    "tokens_per_sec": 0.08808359323763602,
+    "avg_latency_sec": 68.117112159729,
+    "num_test_calls": 2
+  },
+  "system_metrics": {
+    "cpu_cores": 4,
+    "total_ram_gb": 7.879085540771484,
+    "available_ram_gb": 1.4476280212402344
+  },
+  "multilingual_samples": {
+    "english": 2,
+    "hindi": 1,
+    "marathi": 1,
+    "telugu": 1
+  }
+}

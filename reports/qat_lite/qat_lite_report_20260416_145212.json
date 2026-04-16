@@ -1,0 +1,9 @@
+{
+  "phase": "qat_lite",
+  "timestamp": "2026-04-16 15:13:51",
+  "input_model": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\quantized\\quantized_4bit_20260416_134326",
+  "synthetic_samples": 600,
+  "epochs": 1,
+  "artifact_dir": "C:\\Users\\Admin\\Documents\\model-optimization\\artifacts\\qat_lite\\qat_lite_20260416_145212",
+  "train_loss": 4.419478988647461
+}

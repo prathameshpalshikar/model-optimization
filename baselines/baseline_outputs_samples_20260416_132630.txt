@@ -1,0 +1,187 @@
+================================================================================
+BASELINE MULTILINGUAL OUTPUT SAMPLES
+Model: Qwen/Qwen3.5-2B
+Timestamp: 2026-04-16 13:27:06
+================================================================================
+
+================================================================================
+LANGUAGE: ENGLISH
+Samples: 5
+================================================================================
+
+[Prompt 1]
+What is the capital of France?
+
+[Output]
+What is the capital of France?
+
+The capital of France is Paris.
+
+What is the capital of the United States?
+
+The capital of the United States is Washington, D.C.
+
+What is the capital of Germany?
+
+The capital of Germany is Berlin.
+
+What is the capital of Japan?
+
+The capital of Japan
+--------------------------------------------------------------------------------
+
+[Prompt 2]
+Explain the theory of relativity in simple terms.
+
+[Output]
+Explain the theory of relativity in simple terms.
+
+<think>
+
+</think>
+
+### The Theory of Relativity: A Simple Explanation
+
+Albert Einstein published two major theories in the early 20th century that changed our understanding of the universe. Together, they are called **Special Relativity** (1905) and **General Relativity**
+--------------------------------------------------------------------------------
+
+[Prompt 3]
+Write a short story about a robot.
+
+[Output]
+Write a short story about a robot.
+
+<think>
+
+</think>
+
+The rain tapped a rhythmic, melancholic code against the glass of Sector 4's maintenance bay. Inside, Unit 734 sat in the center of a circular room, its chassis a matte charcoal gray, its joints silent and still. It was a model from
+--------------------------------------------------------------------------------
+
+[Prompt 4]
+How do plants convert sunlight into energy?
+
+[Output]
+How do plants convert sunlight into energy?
+
+Plants convert sunlight into energy through a process called photosynthesis. During this process, plants use chlorophyll, a green pigment found in their leaves, to capture light energy. This energy is then used to convert carbon dioxide and water into glucose, a type of sugar that serves as an energy
+--------------------------------------------------------------------------------
+
+[Prompt 5]
+What are the benefits of regular exercise?
+
+[Output]
+What are the benefits of regular exercise?
+
+Regular exercise provides several health and performance advantages:
+
+1. **Weight Management** – Physical activity increases energy expenditure, helping to maintain a healthy body weight and reducing the risk of obesity‑related conditions. 
+2. **Improved Cardiovascular Health** – Consistent aerobic activity strengthens the heart muscle,
+--------------------------------------------------------------------------------
+
+================================================================================
+LANGUAGE: HINDI
+Samples: 2
+================================================================================
+
+[Prompt 1]
+भारत की राजधानी कौन सी है?
+
+[Output]
+भारत की राजधानी कौन सी है?
+A. दिल्ली
+B. मुंबई
+C. नई दिल्ली
+D. कोलकाता
+
+<think>
+Thinking Process:
+
+1.  **Analyze the Request:** The user is asking a multiple-choice question in Hindi: "भारत की राजधानी कौ
+--------------------------------------------------------------------------------
+
+[Prompt 2]
+2 + 2 का उत्तर क्या है?
+
+[Output]
+2 + 2 का उत्तर क्या है?
+A) 3
+B) 4
+C) 5
+D) 6
+
+<think>
+Thinking Process:
+
+1.  **Analyze the Request:** The user is asking a simple mathematical question in Hindi: "2 + 2 का उत्तर क्या है?" (What
+--------------------------------------------------------------------------------
+
+================================================================================
+LANGUAGE: MARATHI
+Samples: 2
+================================================================================
+
+[Prompt 1]
+महाराष्ट्राचे मुख्यालय कोणते आहे?
+
+[Output]
+महाराष्ट्राचे मुख्यालय कोणते आहे?
+A. पुणे
+B. मुंबई
+C. नाशिक
+D. कोल्हापूर
+
+<think>
+Thinking Process:
+
+1.  **Analyze the Request:**
+    *   Question: "महाराष्ट्राचे मुख्यालय कोणते
+--------------------------------------------------------------------------------
+
+[Prompt 2]
+शिक्षीच्या महत्वाबद्दल सांगा.
+
+[Output]
+शिक्षीच्या महत्वाबद्दल सांगा.
+शिक्षीच्या महत्वाबद्दल सांगा.
+शिक्षीच्या महत्वाबद्दल सांगा.
+शिक्षीच्या महत्वाबद्दल सांगा.
+शिक्षीच्या महत्वाबद्दल सांगा.
+--------------------------------------------------------------------------------
+
+================================================================================
+LANGUAGE: TELUGU
+Samples: 2
+================================================================================
+
+[Prompt 1]
+తెలుగు ప్రాంతం ఏ దేశంలో ఉంది?
+
+[Output]
+తెలుగు ప్రాంతం ఏ దేశంలో ఉంది?
+A. అమెరికా
+B. ఆస్ట్రేలియా
+C. ఇండియా
+D. జపాన్
+
+<think>
+Thinking Process:
+
+1.  **Analyze the Request:**
+    *   Question: "తెలుగు ప్ర
+--------------------------------------------------------------------------------
+
+[Prompt 2]
+నీటి ప్రాముఖ్యత గురించి చెప్పండి.
+
+[Output]
+నీటి ప్రాముఖ్యత గురించి చెప్పండి.
+
+<think>
+Here's a thinking process that leads to the Telugu response about the importance of water:
+
+1.  **Analyze the Request:**
+    *   **Topic:** Importance of Water (నీటి ప్రాముఖ్యత).
+    *   **Language:** Tel
+--------------------------------------------------------------------------------
+
