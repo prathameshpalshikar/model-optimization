@@ -1,26 +1,33 @@
-Project Title
 # Edge LLM Optimization Pipeline
-1. Objective
-This project focuses on reducing the size and runtime memory of a multilingual language model for deployment on memory-constrained edge devices.
+
+## 1. Objective
+
+This project reduces model size and runtime memory for a multilingual language model intended for memory-constrained CPU edge devices.
 
 Starting point:
-- ~2B parameter model
+- Approximately 2B parameter model
 
 Target constraints:
-- Model size ≤ 1GB
-- Runtime memory ≤ 2GB
+- Model size around 1.2 GiB or lower for the current Q4_K_M target
+- Runtime memory around 2 GiB or lower
 - CPU-only inference
-2. Approach
+
+## 2. Approach
+
 The optimization pipeline follows a strict sequence:
 
 1. Baseline measurement
-2. Structural pruning (10–20%)
-3. 4-bit quantization
-4. Quantization-aware fine-tuning (QAT-lite)
-5. Runtime optimization (KV cache + context control)
+2. Activation-aware WANDA pruning over attention/MLP Linear weights
+3. QAT-ready LoRA recovery with optional fake 4-bit quantization simulation
+4. GGUF export and configurable llama.cpp post-training quantization
+5. Runtime validation with llama.cpp
+6. Final reporting
+7. Optional GGUF comparison against a reference model such as Unsloth
 
 Each step is validated before proceeding.
-3. Repository Structure
+
+## 3. Repository Structure
+
 scripts/
 - 01_baseline.py
 - 02_pruning.py
@@ -28,19 +35,29 @@ scripts/
 - 04_qat_lite.py
 - 05_runtime_opt.py
 - 06_report.py
+- 07_compare_gguf.py
+- utils.py
 
 reports/
-- performance comparisons
+- performance comparisons and pipeline reports
 
-configs/
-- model + experiment configs
-4. Key Design Decisions
-- No distillation dataset used
-- Synthetic data used for QAT-lite
-- CPU-first deployment target
-- llama.cpp used for final inference benchmarking
-5. Important Note on Model Files
-Large model files are NOT included in this repository.
+artifacts/
+- lightweight latest-artifact pointers and small metadata files
+
+## 4. Key Design Decisions
+
+- No distillation dataset is currently used.
+- Pruning uses WANDA scores: `abs(weight) * activation_scale`, where activation scale is collected from calibration prompts.
+- Pruning currently preserves tensor shapes for Qwen3.5 compatibility; it prunes scalar weights inside attention/MLP Linear tensors.
+- QAT-lite can run in `fake_quant_lora` mode, where target Linear layers simulate group-wise 4-bit quantized weights during LoRA recovery training.
+- If `--dataset` is not provided, QAT uses answer-bearing synthetic fallback data. This verifies mechanics but is not enough for high-quality QAT.
+- llama.cpp `llama-quantize` performs the deployable GGUF post-training quantization.
+- CPU-first deployment target.
+- llama.cpp is used for final inference benchmarking.
+
+## 5. Important Note on Model Files
+
+Large model files are not included in this repository.
 
 Excluded:
 - *.gguf
@@ -48,32 +65,62 @@ Excluded:
 - checkpoints and binaries
 
 Reason:
-- GitHub size limits (max ~2GB per file)
+- GitHub size limits
 - Models are treated as artifacts, not source code
 
 To reproduce:
-- Download or generate models locally
-- Place them in /models or /outputs (ignored by Git)
-6. How to Run
-1. Clone repo
-2. Install dependencies
-3. Run scripts in order:
+- Download or generate models locally.
+- Place them in ignored local artifact/model folders.
+- Keep latest-artifact pointer files portable by using repo-relative paths when possible.
 
+## 6. How to Run
+
+From the repository root:
+
+```powershell
 python scripts/01_baseline.py
 python scripts/02_pruning.py
-...
-7. Benchmarking
-Final models are tested using llama.cpp (CPU inference).
+python scripts/04_qat_lite.py
+python scripts/03_quantize.py
+python scripts/05_runtime_opt.py
+python scripts/06_report.py
+```
+
+Useful knobs:
+
+```powershell
+python scripts/02_pruning.py --ratios 0.10,0.15 --calibration-samples 8
+python scripts/04_qat_lite.py --qat-mode fake_quant_lora --dataset path\to\train.jsonl --max-steps 200
+python scripts/03_quantize.py --quant-type Q4_K_M
+```
+
+After restoring or generating GGUF files, compare against a reference GGUF:
+
+```powershell
+python scripts/07_compare_gguf.py --candidate path\to\your.gguf --reference path\to\unsloth.gguf
+```
+
+## 7. Benchmarking
+
+Final models are tested using llama.cpp CPU inference.
 
 Metrics:
 - tokens/sec
 - RAM usage
 - multilingual output quality
-8. Limitations
-- Quantization introduces quality degradation
-- No large-scale fine-tuning
-- Performance depends on CPU capability
-9. Future Work
-- Better multilingual recovery after quantization
-- Explore mixed precision strategies
-- Evaluate alternative pruning methods
+- GGUF size, metadata, tensor count, and tensor quantization-type distribution against a reference model
+
+## 8. Limitations
+
+- WANDA pruning is real activation-aware pruning, but because tensor shapes are preserved, it does not guarantee GGUF size or CPU speed improvements.
+- Quantization introduces quality degradation.
+- Fake-quant LoRA recovery is QAT-ready but still needs representative data for high-quality output recovery.
+- No large-scale fine-tuning dataset is included.
+- Performance depends on CPU capability and llama.cpp version.
+
+## 9. Future Work
+
+- Add a representative multilingual supervised dataset for true QAT or better recovery fine-tuning.
+- Add perplexity and task-level quality gates.
+- Explore structured pruning only if speed/size reductions are required before quantization.
+- Evaluate mixed precision and alternative GGUF quantization strategies.
