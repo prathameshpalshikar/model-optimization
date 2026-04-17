@@ -3,6 +3,7 @@ PHASE 3: GGUF EXPORT + Q4_K_M QUANTIZATION
 Convert the HF checkpoint to GGUF and quantize it for llama.cpp.
 """
 
+import argparse
 import json
 import os
 import re
@@ -14,6 +15,8 @@ from pathlib import Path
 
 import requests
 
+from utils import resolve_artifact_pointer, write_artifact_pointer
+
 ROOT = Path(__file__).parent.parent
 REPORT_DIR = ROOT / "reports" / "quantization"
 ARTIFACT_DIR = ROOT / "artifacts" / "gguf"
@@ -22,6 +25,7 @@ LLAMA_SRC = VENDOR_DIR / "llama.cpp"
 LLAMA_BIN = VENDOR_DIR / "llama.cpp-bin"
 QAT_MERGED_LATEST = ROOT / "artifacts" / "qat_lite" / "latest_qat_merged_path.txt"
 PRUNED_LATEST = ROOT / "artifacts" / "pruned" / "latest_pruned_path.txt"
+LLAMA_CPP_RELEASE_TAG = os.environ.get("LLAMA_CPP_RELEASE_TAG")
 
 
 def timestamp_slug() -> str:
@@ -44,10 +48,12 @@ def run_checked(args: list[str], cwd: Path | None = None):
 
 
 def resolve_input_model() -> str:
-    if QAT_MERGED_LATEST.exists():
-        return QAT_MERGED_LATEST.read_text(encoding="utf-8").strip()
-    if PRUNED_LATEST.exists():
-        return PRUNED_LATEST.read_text(encoding="utf-8").strip()
+    qat_model = resolve_artifact_pointer(QAT_MERGED_LATEST)
+    if qat_model is not None and qat_model.exists():
+        return str(qat_model)
+    pruned_model = resolve_artifact_pointer(PRUNED_LATEST)
+    if pruned_model is not None and pruned_model.exists():
+        return str(pruned_model)
     return "Qwen/Qwen3.5-2B"
 
 
@@ -55,11 +61,18 @@ def ensure_llama_cpp_source():
     if LLAMA_SRC.exists():
         return
     VENDOR_DIR.mkdir(parents=True, exist_ok=True)
-    run_checked(["git", "clone", "--depth", "1", "https://github.com/ggml-org/llama.cpp.git", str(LLAMA_SRC)])
+    args = ["git", "clone", "--depth", "1"]
+    if LLAMA_CPP_RELEASE_TAG:
+        args.extend(["--branch", LLAMA_CPP_RELEASE_TAG])
+    args.extend(["https://github.com/ggml-org/llama.cpp.git", str(LLAMA_SRC)])
+    run_checked(args)
 
 
 def latest_cpu_zip_asset() -> tuple[str, str]:
-    response = requests.get("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest", timeout=60)
+    release_url = "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest"
+    if LLAMA_CPP_RELEASE_TAG:
+        release_url = f"https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/{LLAMA_CPP_RELEASE_TAG}"
+    response = requests.get(release_url, timeout=60)
     response.raise_for_status()
     release = response.json()
     for asset in release.get("assets", []):
@@ -98,21 +111,26 @@ def find_binary(name: str) -> Path:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Export HF checkpoint to GGUF and run llama.cpp quantization.")
+    parser.add_argument("--quant-type", default=os.environ.get("GGUF_QUANT_TYPE", "Q4_K_M"))
+    parser.add_argument("--input-model", default=os.environ.get("QUANT_INPUT_MODEL"))
+    args_cli = parser.parse_args()
+
     print("=" * 80)
-    print("PHASE 3: GGUF EXPORT + Q4_K_M QUANTIZATION")
+    print(f"PHASE 3: GGUF EXPORT + {args_cli.quant_type} QUANTIZATION")
     print("=" * 80)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     stamp = timestamp_slug()
 
-    input_model = resolve_input_model()
+    input_model = args_cli.input_model or resolve_input_model()
     ensure_llama_cpp_source()
     ensure_llama_cpp_binaries()
 
     converter = LLAMA_SRC / "convert_hf_to_gguf.py"
     llama_quantize = find_binary("llama-quantize.exe")
     raw_gguf = ARTIFACT_DIR / f"model_f16_{stamp}.gguf"
-    q4_gguf = ARTIFACT_DIR / f"model_Q4_K_M_{stamp}.gguf"
+    quantized_gguf = ARTIFACT_DIR / f"model_{args_cli.quant_type}_{stamp}.gguf"
 
     print(f"Input HF model: {input_model}")
     print("Converting HF checkpoint to GGUF...")
@@ -129,13 +147,13 @@ def main():
         cwd=ROOT,
     )
 
-    print("Quantizing GGUF to Q4_K_M...")
+    print(f"Quantizing GGUF to {args_cli.quant_type}...")
     quant_result = run_checked(
         [
             str(llama_quantize),
             str(raw_gguf),
-            str(q4_gguf),
-            "Q4_K_M",
+            str(quantized_gguf),
+            args_cli.quant_type,
         ],
         cwd=ROOT,
     )
@@ -146,11 +164,14 @@ def main():
         "input_model": input_model,
         "llama_cpp_source_dir": str(LLAMA_SRC),
         "llama_cpp_bin_dir": str(LLAMA_BIN),
+        "llama_cpp_release_tag": LLAMA_CPP_RELEASE_TAG or "latest",
         "raw_gguf_path": str(raw_gguf),
         "raw_gguf_size_mb": file_size_mb(raw_gguf),
-        "quantized_gguf_path": str(q4_gguf),
-        "quantized_gguf_size_mb": file_size_mb(q4_gguf),
-        "quantization_method": "Q4_K_M",
+        "quantized_gguf_path": str(quantized_gguf),
+        "quantized_gguf_size_mb": file_size_mb(quantized_gguf),
+        "quantization_method": args_cli.quant_type,
+        "quantization_impl": "llama.cpp llama-quantize post-training GGUF quantization",
+        "quantization_is_applied": True,
         "conversion_stdout_tail": convert_result.stdout[-4000:],
         "conversion_stderr_tail": convert_result.stderr[-4000:],
         "quantize_stdout_tail": quant_result.stdout[-4000:],
@@ -160,12 +181,12 @@ def main():
     with report_file.open("w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2)
 
-    (ARTIFACT_DIR / "latest_gguf_path.txt").write_text(str(q4_gguf), encoding="utf-8")
-    (ARTIFACT_DIR / "latest_raw_gguf_path.txt").write_text(str(raw_gguf), encoding="utf-8")
+    write_artifact_pointer(ARTIFACT_DIR / "latest_gguf_path.txt", quantized_gguf)
+    write_artifact_pointer(ARTIFACT_DIR / "latest_raw_gguf_path.txt", raw_gguf)
 
     print(f"Raw GGUF saved to: {raw_gguf}")
-    print(f"Quantized GGUF saved to: {q4_gguf}")
-    print(f"Quantized size: {file_size_mb(q4_gguf):.2f} MB")
+    print(f"Quantized GGUF saved to: {quantized_gguf}")
+    print(f"Quantized size: {file_size_mb(quantized_gguf):.2f} MB")
     print(f"Report saved to: {report_file}")
 
 

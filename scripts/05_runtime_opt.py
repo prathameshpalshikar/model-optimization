@@ -11,7 +11,7 @@ from pathlib import Path
 
 import psutil
 
-from utils import get_multilingual_eval_set
+from utils import get_multilingual_eval_set, resolve_artifact_pointer, write_artifact_pointer
 
 ROOT = Path(__file__).parent.parent
 ARTIFACT_DIR = ROOT / "artifacts" / "runtime"
@@ -119,7 +119,10 @@ def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     stamp = timestamp_slug()
 
-    gguf_path = GGUF_LATEST.read_text(encoding="utf-8").strip()
+    gguf_path_obj = resolve_artifact_pointer(GGUF_LATEST)
+    if gguf_path_obj is None or not gguf_path_obj.exists():
+        raise FileNotFoundError(f"Missing GGUF artifact pointer or model file: {GGUF_LATEST}")
+    gguf_path = str(gguf_path_obj)
     context_cap = 2048
     sliding_window = 256
     runtime_samples = {}
@@ -212,6 +215,8 @@ def main():
         "backend": "cpu",
         "context_cap_tokens": context_cap,
         "sliding_window_tokens": sliding_window,
+        "sliding_window_applied": False,
+        "runtime_notes": "Context is capped with -c. sliding_window_tokens is a target policy value only unless mapped to a supported llama.cpp CLI flag.",
         "stable_inference": len(failures) == 0,
         "failures": failures,
         "peak_runtime_memory_mb": peak_rss,
@@ -222,7 +227,7 @@ def main():
     with report_file.open("w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2)
 
-    (ARTIFACT_DIR / "latest_runtime_report.txt").write_text(str(report_file), encoding="utf-8")
+    write_artifact_pointer(ARTIFACT_DIR / "latest_runtime_report.txt", report_file)
     print(f"Runtime report saved to: {report_file}")
 
 
