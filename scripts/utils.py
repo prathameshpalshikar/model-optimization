@@ -5,11 +5,23 @@ Shared utilities for model optimization pipeline.
 import os
 import json
 import gc
+import re
 import tracemalloc
 import time
+from pathlib import Path
 from typing import Tuple, Dict, Any, List
-import torch
-import psutil
+
+try:
+    import torch
+except Exception:
+    torch = None
+
+try:
+    import psutil
+except Exception:
+    psutil = None
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # ============================================================================
 # Memory & Resource Monitoring
@@ -28,15 +40,47 @@ def get_peak_memory_mb() -> float:
 
 def get_current_memory_mb() -> float:
     """Get current memory usage in MB."""
+    if psutil is None:
+        raise RuntimeError("psutil is required for current memory measurement")
     process = psutil.Process()
     return process.memory_info().rss / (1024 ** 2)
 
 def cleanup_resources():
     """Cleanup: clear cache, garbage collect, reset memory tracking."""
     gc.collect()
-    if torch.cuda.is_available():
+    if torch is not None and torch.cuda.is_available():
         torch.cuda.empty_cache()
     time.sleep(0.1)  # Brief pause to allow cleanup
+
+# ============================================================================
+# Artifact Path Handling
+# ============================================================================
+
+def write_artifact_pointer(pointer_file: str | Path, target_path: str | Path, root: Path = PROJECT_ROOT):
+    """Write a portable latest-artifact pointer, using a repo-relative path when possible."""
+    pointer = Path(pointer_file)
+    target = Path(target_path)
+    pointer.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        text = str(target.resolve().relative_to(root.resolve()))
+    except ValueError:
+        text = str(target)
+    pointer.write_text(text, encoding="utf-8")
+
+def resolve_artifact_pointer(pointer_file: str | Path, root: Path = PROJECT_ROOT) -> Path | None:
+    """Resolve a latest-artifact pointer written as absolute, repo-relative, or pointer-relative path."""
+    pointer = Path(pointer_file)
+    if not pointer.exists():
+        return None
+    raw = pointer.read_text(encoding="utf-8").strip()
+    if not raw:
+        return None
+    candidate = Path(raw)
+    candidates = [candidate] if candidate.is_absolute() else [root / candidate, pointer.parent / candidate, candidate]
+    for item in candidates:
+        if item.exists():
+            return item.resolve()
+    return candidates[0]
 
 # ============================================================================
 # Throughput Measurement
@@ -110,6 +154,77 @@ MULTILINGUAL_PROMPTS = {
 def get_multilingual_eval_set() -> Dict[str, List[str]]:
     """Return standard multilingual evaluation prompts."""
     return MULTILINGUAL_PROMPTS
+
+EXPECTED_SHORT_ANSWERS = {
+    "english": {
+        0: ["paris"],
+    },
+    "hindi": {
+        0: ["नई दिल्ली", "दिल्ली"],
+        1: ["4", "चार"],
+    },
+    "marathi": {
+        0: ["मुंबई"],
+    },
+    "telugu": {
+        0: ["భారతదేశం", "ఇండియా", "india"],
+    },
+}
+
+SCRIPT_RANGES = {
+    "hindi": (0x0900, 0x097F),
+    "marathi": (0x0900, 0x097F),
+    "telugu": (0x0C00, 0x0C7F),
+}
+
+def has_repetition_loop(text: str, ngram: int = 4, max_repeats: int = 3) -> bool:
+    """Detect simple repeated lines or repeated token n-grams in generated text."""
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    line_counts = {}
+    for line in lines:
+        line_counts[line] = line_counts.get(line, 0) + 1
+        if line_counts[line] >= max_repeats:
+            return True
+
+    tokens = re.findall(r"\S+", text.lower())
+    if len(tokens) < ngram * max_repeats:
+        return False
+    counts = {}
+    for idx in range(0, len(tokens) - ngram + 1):
+        key = tuple(tokens[idx : idx + ngram])
+        counts[key] = counts.get(key, 0) + 1
+        if counts[key] >= max_repeats:
+            return True
+    return False
+
+def contains_language_script(text: str, language: str) -> bool:
+    """Return True when output contains the expected script for Indic-language prompts."""
+    bounds = SCRIPT_RANGES.get(language)
+    if bounds is None:
+        return True
+    start, end = bounds
+    return any(start <= ord(char) <= end for char in text)
+
+def assess_generation(text: str, language: str, prompt_index: int | None = None) -> Dict[str, Any]:
+    """Score a lightweight generation gate without requiring a full benchmark suite."""
+    checks = {
+        "non_empty": bool(text.strip()),
+        "has_expected_script": contains_language_script(text, language),
+        "has_repetition_loop": has_repetition_loop(text),
+        "contains_expected_answer": True,
+    }
+    expected = EXPECTED_SHORT_ANSWERS.get(language, {}).get(prompt_index)
+    if expected:
+        lowered = text.lower()
+        checks["contains_expected_answer"] = any(answer.lower() in lowered for answer in expected)
+        checks["expected_answers"] = expected
+    checks["ok"] = (
+        checks["non_empty"]
+        and checks["has_expected_script"]
+        and not checks["has_repetition_loop"]
+        and checks["contains_expected_answer"]
+    )
+    return checks
 
 def generate_and_save_outputs(model, tokenizer, output_file: str, 
                              max_new_tokens: int = 100) -> Dict[str, Any]:
