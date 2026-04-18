@@ -1,0 +1,322 @@
+{
+  "timestamp": "2026-04-18 23:27:35",
+  "llama_cli": null,
+  "candidate": {
+    "name": "candidate",
+    "metadata": {
+      "path": "artifacts\\gguf\\model_Q4_K_M_20260416_174022.gguf",
+      "exists": true,
+      "size_mib": 1215.3587646484375,
+      "magic": "GGUF",
+      "version": 3,
+      "tensor_count": 320,
+      "metadata_count": 32,
+      "selected_metadata": {
+        "general.architecture": "qwen35",
+        "general.file_type": 15,
+        "general.name": "Qat_Lite_Merged_20260416_165810",
+        "general.quantization_version": 2,
+        "general.size_label": "1.9B",
+        "general.type": "model",
+        "qwen35.attention.head_count": 8,
+        "qwen35.attention.head_count_kv": 2,
+        "qwen35.attention.key_length": 256,
+        "qwen35.attention.layer_norm_rms_epsilon": 9.999999974752427e-07,
+        "qwen35.attention.value_length": 256,
+        "qwen35.block_count": 24,
+        "qwen35.context_length": 262144,
+        "qwen35.embedding_length": 2048,
+        "qwen35.feed_forward_length": 6144,
+        "qwen35.full_attention_interval": 4,
+        "qwen35.rope.dimension_count": 64,
+        "qwen35.rope.dimension_sections": [
+          11,
+          11,
+          10,
+          0
+        ],
+        "qwen35.rope.freq_base": 10000000.0,
+        "qwen35.ssm.conv_kernel": 4,
+        "qwen35.ssm.group_count": 16,
+        "qwen35.ssm.inner_size": 2048,
+        "qwen35.ssm.state_size": 128,
+        "qwen35.ssm.time_step_rank": 16,
+        "tokenizer.chat_template": "{%- set image_count = namespace(value=0) %}\n{%- set video_count = namespace(value=0) %}\n{%- macro render_content(content, do_vision_count, is_system_content=false) %}\n    {%- if content is string %}\n        {{- content }}\n    {%- elif conte...",
+        "tokenizer.ggml.model": "gpt2"
+      },
+      "tensor_type_counts": {
+        "F32": 133,
+        "Q6_K": 25,
+        "Q4_K": 162
+      },
+      "first_tensors": [
+        {
+          "name": "output_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "token_embd.weight",
+          "dims": [
+            2048,
+            248320
+          ],
+          "type": "Q6_K"
+        },
+        {
+          "name": "blk.0.attn_gate.weight",
+          "dims": [
+            2048,
+            2048
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.attn_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.attn_qkv.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q6_K"
+        },
+        {
+          "name": "blk.0.ffn_down.weight",
+          "dims": [
+            6144,
+            2048
+          ],
+          "type": "Q6_K"
+        },
+        {
+          "name": "blk.0.ffn_gate.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.ffn_up.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.post_attention_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.ssm_a",
+          "dims": [
+            16
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.ssm_alpha.weight",
+          "dims": [
+            2048,
+            16
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.ssm_beta.weight",
+          "dims": [
+            2048,
+            16
+          ],
+          "type": "Q4_K"
+        }
+      ]
+    },
+    "runtime": {
+      "skipped": true,
+      "reason": "llama-cli not found"
+    }
+  },
+  "reference": {
+    "name": "reference",
+    "metadata": {
+      "path": "C:\\Users\\prath\\Documents\\unsloth-qwen3.5\\models\\qwen2b\\Qwen3.5-2B-Q4_K_M.gguf",
+      "exists": true,
+      "size_mib": 1221.500244140625,
+      "magic": "GGUF",
+      "version": 3,
+      "tensor_count": 320,
+      "metadata_count": 46,
+      "selected_metadata": {
+        "general.architecture": "qwen35",
+        "general.base_model.0.name": "Qwen3.5 2B",
+        "general.base_model.0.organization": "Qwen",
+        "general.base_model.0.repo_url": "https://huggingface.co/Qwen/Qwen3.5-2B",
+        "general.base_model.count": 1,
+        "general.basename": "Qwen3.5-2B",
+        "general.file_type": 15,
+        "general.license": "apache-2.0",
+        "general.license.link": "https://huggingface.co/Qwen/Qwen3.5-2B/blob/main/LICENSE",
+        "general.name": "Qwen3.5-2B",
+        "general.quantization_version": 2,
+        "general.quantized_by": "Unsloth",
+        "general.repo_url": "https://huggingface.co/unsloth",
+        "general.size_label": "2B",
+        "general.tags": [
+          "unsloth",
+          "image-text-to-text"
+        ],
+        "general.type": "model",
+        "qwen35.attention.head_count": 8,
+        "qwen35.attention.head_count_kv": 2,
+        "qwen35.attention.key_length": 256,
+        "qwen35.attention.layer_norm_rms_epsilon": 9.999999974752427e-07,
+        "qwen35.attention.value_length": 256,
+        "qwen35.block_count": 24,
+        "qwen35.context_length": 262144,
+        "qwen35.embedding_length": 2048,
+        "qwen35.feed_forward_length": 6144,
+        "qwen35.full_attention_interval": 4,
+        "qwen35.rope.dimension_count": 64,
+        "qwen35.rope.dimension_sections": [
+          11,
+          11,
+          10,
+          0
+        ],
+        "qwen35.rope.freq_base": 10000000.0,
+        "qwen35.ssm.conv_kernel": 4,
+        "qwen35.ssm.group_count": 16,
+        "qwen35.ssm.inner_size": 2048,
+        "qwen35.ssm.state_size": 128,
+        "qwen35.ssm.time_step_rank": 16,
+        "tokenizer.chat_template": "{%- set image_count = namespace(value=0) %}\n{%- set video_count = namespace(value=0) %}\n{%- macro render_content(content, do_vision_count, is_system_content=false) %}\n    {%- if content is string %}\n        {{- content }}\n    {%- elif conte...",
+        "tokenizer.ggml.model": "gpt2"
+      },
+      "tensor_type_counts": {
+        "F32": 133,
+        "Q6_K": 17,
+        "Q4_K": 98,
+        "Q5_K": 36,
+        "Q8_0": 36
+      },
+      "first_tensors": [
+        {
+          "name": "output_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "token_embd.weight",
+          "dims": [
+            2048,
+            248320
+          ],
+          "type": "Q6_K"
+        },
+        {
+          "name": "blk.0.attn_gate.weight",
+          "dims": [
+            2048,
+            2048
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.attn_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.attn_qkv.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q5_K"
+        },
+        {
+          "name": "blk.0.ffn_down.weight",
+          "dims": [
+            6144,
+            2048
+          ],
+          "type": "Q6_K"
+        },
+        {
+          "name": "blk.0.ffn_gate.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.ffn_up.weight",
+          "dims": [
+            2048,
+            6144
+          ],
+          "type": "Q4_K"
+        },
+        {
+          "name": "blk.0.post_attention_norm.weight",
+          "dims": [
+            2048
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.ssm_a",
+          "dims": [
+            16
+          ],
+          "type": "F32"
+        },
+        {
+          "name": "blk.0.ssm_alpha.weight",
+          "dims": [
+            2048,
+            16
+          ],
+          "type": "Q8_0"
+        },
+        {
+          "name": "blk.0.ssm_beta.weight",
+          "dims": [
+            2048,
+            16
+          ],
+          "type": "Q8_0"
+        }
+      ]
+    },
+    "runtime": {
+      "skipped": true,
+      "reason": "llama-cli not found"
+    }
+  },
+  "comparison": {
+    "candidate_size_mib": 1215.3587646484375,
+    "reference_size_mib": 1221.500244140625,
+    "candidate_minus_reference_mib": -6.1414794921875,
+    "candidate_size_pct_of_reference": 99.49721831643936,
+    "tensor_type_counts_equal": false
+  }
+}
